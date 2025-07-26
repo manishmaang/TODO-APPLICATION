@@ -3,17 +3,22 @@ package config
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"time"
-
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var DB *pgxpool.Pool
 
 func init() {
-	dbURL := os.Getenv("DATABASE_URL")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		log.Fatal("DATABASE_URL is not set")
 	}
@@ -25,10 +30,10 @@ func init() {
 	}
 
 	// Customize connection pool settings
-	config.MaxConns = 10                       // max number of connections in the pool
-	config.MinConns = 2                        // minimum number of connections always kept alive
-	config.MaxConnIdleTime = 5 * time.Minute   // close idle connections after 5 minutes
-	config.MaxConnLifetime = 30 * time.Minute  // close connections older than 30 minutes
+	config.MaxConns = 10                        // max number of connections in the pool
+	config.MinConns = 2                         // minimum number of connections always kept alive
+	config.MaxConnIdleTime = 5 * time.Minute    // close idle connections after 5 minutes
+	config.MaxConnLifetime = 30 * time.Minute   // close connections older than 30 minutes
 	config.HealthCheckPeriod = 30 * time.Second // periodically ping idle connections
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/manishmaang/TODO-APPLICATION/routes" 
+	_ "github.com/manishmaang/TODO-APPLICATION/config" // run init() only
 )
 
 func main() {

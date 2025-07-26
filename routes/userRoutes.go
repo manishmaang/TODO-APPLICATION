@@ -2,6 +2,8 @@ package routes
 
 import(
 	"github.com/gin-gonic/gin"
+	"github.com/manishmaang/TODO-APPLICATION/controllers"
+
 )
 
 func UserRoutes(router * gin.Engine){
@@ -10,4 +12,6 @@ func UserRoutes(router * gin.Engine){
 			"message":"Hello World !!",
 		})
 	});
+
+	router.POST("/register", controllers.RegisterUsers);
 }
