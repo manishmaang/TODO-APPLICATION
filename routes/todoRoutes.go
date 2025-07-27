@@ -1,7 +1,8 @@
 package routes
 
-import(
+import (
 	"github.com/gin-gonic/gin"
+	"github.com/manishmaang/TODO-APPLICATION/controllers"
 )
 
 func TodoRoutes(router * gin.Engine){
@@ -10,4 +11,6 @@ func TodoRoutes(router * gin.Engine){
 			"message" : "Hello from todo routes",
 		})
 	})
+
+	router.POST("/task", controllers.CreateTask)
 }
