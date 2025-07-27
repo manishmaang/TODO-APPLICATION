@@ -14,4 +14,5 @@ func UserRoutes(router * gin.Engine){
 	});
 
 	router.POST("/register", controllers.RegisterUsers);
+	router.POST("/login", controllers.LogInUsers);
 }
