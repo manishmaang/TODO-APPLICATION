@@ -10,7 +10,8 @@ func TodoRoutes(router * gin.Engine){
 		ctx.JSON(200, gin.H{
 			"message" : "Hello from todo routes",
 		})
-	})
+	});
 
-	router.POST("/task", controllers.CreateTask)
+	router.POST("/task", controllers.CreateTask);
+	router.DELETE("/tasks", controllers.DeleteTask);
 }

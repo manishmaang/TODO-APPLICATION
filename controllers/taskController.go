@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"context"
-	"net/http"
-	"time"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/manishmaang/TODO-APPLICATION/config"
 	"github.com/manishmaang/TODO-APPLICATION/models"
+	"net/http"
+	"time"
 )
 
 func CreateTask(ctx *gin.Context) {
@@ -47,19 +47,48 @@ func CreateTask(ctx *gin.Context) {
 		payload.CreatedAt,
 		payload.ExpiryTime,
 		payload.Username,
-	).Scan(&id);
+	).Scan(&id)
 
-	if err != nil{
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error":"Internal Server Error",
+			"error":   "Internal Server Error",
 			"message": err.Error(),
 		})
-		return;
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"message": "Task created successfully",
-		"id": id,
+		"id":      id,
 	})
 
+}
+
+func DeleteTask(ctx *gin.Context) {
+	type TaskRequest struct {
+		TaskName string `json:"task_name"`
+	}
+
+	var req TaskRequest
+
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ct, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `DELETE FROM tasks WHERE task_name = $1`
+	_, err := config.DB.Exec(ct, query, req.TaskName)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 }
