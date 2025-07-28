@@ -13,5 +13,5 @@ func TodoRoutes(router * gin.Engine){
 	});
 
 	router.POST("/task", controllers.CreateTask);
-	router.DELETE("/tasks", controllers.DeleteTask);
+	router.DELETE("/task", controllers.DeleteTask);
 }

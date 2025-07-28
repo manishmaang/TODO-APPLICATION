@@ -19,3 +19,23 @@ func main() {
 
 	router.Run(":3000")
 }
+
+// -----------------------------------------------------------
+//  Context Summary Table (Go/Gin)
+// -----------------------------------------------------------
+// context.Background() 
+// → base context, never times out or cancels—used as a starting point
+//
+// context.WithTimeout(ctx, duration) 
+// → wraps a context with a deadline—automatically cancels after given time
+//
+// cancel() 
+// → function returned by WithTimeout that manually stops the context & releases resources
+//
+// defer cancel() 
+// → schedules cancel() to run after current function finishes,
+//    ensures cleanup happens even on early return or error
+//
+// Best Practice: always use 'defer cancel()' right after creating
+// a timeout context to prevent resource leaks and dangling operations
+// -----------------------------------------------------------
