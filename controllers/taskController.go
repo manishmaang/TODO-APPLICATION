@@ -92,3 +92,46 @@ func DeleteTask(ctx *gin.Context) {
 
 	ctx.Status(http.StatusNoContent)
 }
+
+func UpdateTask(ctx *gin.Context) {
+	type Payload struct {
+		TaskName    string `json:"task_name"`
+		Description string `json:"description"`
+	}
+
+	var updateRequest Payload
+
+	if err := ctx.BindJSON(&updateRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	query := ` UPDATE tasks SET description = $1 WHERE task_name = $2 
+	RETURNING  task_name, description, created_at, expiry_time, username`
+	var updatedTask models.TodoSchema
+	row := config.DB.QueryRow(ct, query, updateRequest.Description, updateRequest.TaskName)
+    err := row.Scan(
+        &updatedTask.TaskName,
+        &updatedTask.Description,
+        &updatedTask.CreatedAt,
+        &updatedTask.ExpiryTime,
+        &updatedTask.Username,
+    )
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Taks updated successfully",
+		"data": updatedTask,
+	})
+}
